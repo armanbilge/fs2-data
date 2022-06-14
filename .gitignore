@@ -61,3 +61,5 @@ site/output
 metals.sbt
 
 .vscode/settings.json
+
+node_modules/
