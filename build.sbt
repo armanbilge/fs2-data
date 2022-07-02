@@ -1,7 +1,7 @@
 val scala212 = "2.12.16"
 val scala213 = "2.13.8"
 val scala3 = "3.1.3"
-val fs2Version = "3.2.9"
+val fs2Version = "3.2.8-9-c8d26b0-SNAPSHOT"
 val circeVersion = "0.14.2"
 val circeExtrasVersion = "0.14.1"
 val playVersion = "2.9.2"
@@ -34,7 +34,7 @@ val commonSettings = List(
       case _            => Nil
     }
   },
-  organization := "org.gnieh",
+  organization := "com.armanbilge",
   headerLicense := Some(HeaderLicense.ALv2("2019-2022", "Lucas Satabin")),
   licenses += ("The Apache Software License, Version 2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
   homepage := Some(url("https://github.com/satabin/fs2-data")),
@@ -55,17 +55,17 @@ val commonSettings = List(
     .toList
     .flatten,
   libraryDependencies ++= List(
-    "co.fs2" %%% "fs2-core" % fs2Version,
+    "com.armanbilge" %%% "fs2-core" % fs2Version,
     "org.scala-lang.modules" %%% "scala-collection-compat" % "2.7.0",
-    "io.circe" %%% "circe-parser" % circeVersion % "test",
-    "io.circe" %%% "circe-jawn" % circeVersion % "test",
-    "io.circe" %%% "circe-generic" % circeVersion % "test",
-    "co.fs2" %%% "fs2-io" % fs2Version % "test",
-    "com.disneystreaming" %%% "weaver-cats" % "0.7.13" % "test",
-    "com.disneystreaming" %%% "weaver-cats-core" % "0.7.13" % "test",
-    "com.disneystreaming" %%% "weaver-core" % "0.7.13" % "test",
-    "com.disneystreaming" %%% "weaver-framework" % "0.7.13" % "test",
-    "com.eed3si9n.expecty" %%% "expecty" % "0.15.4" % "test",
+    // "io.circe" %%% "circe-parser" % circeVersion % "test",
+    // "io.circe" %%% "circe-jawn" % circeVersion % "test",
+    // "io.circe" %%% "circe-generic" % circeVersion % "test",
+    // "co.fs2" %%% "fs2-io" % fs2Version % "test",
+    // "com.disneystreaming" %%% "weaver-cats" % "0.7.13" % "test",
+    // "com.disneystreaming" %%% "weaver-cats-core" % "0.7.13" % "test",
+    // "com.disneystreaming" %%% "weaver-core" % "0.7.13" % "test",
+    // "com.disneystreaming" %%% "weaver-framework" % "0.7.13" % "test",
+    // "com.eed3si9n.expecty" %%% "expecty" % "0.15.4" % "test",
     "org.portable-scala" %%% "portable-scala-reflect" % "1.1.2" cross CrossVersion.for3Use2_13
   ) ++ PartialFunction
     .condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
@@ -77,7 +77,8 @@ val commonSettings = List(
     .toList
     .flatten,
   testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
-  scmInfo := Some(ScmInfo(url("https://github.com/satabin/fs2-data"), "scm:git:git@github.com:satabin/fs2-data.git"))
+  scmInfo := Some(ScmInfo(url("https://github.com/satabin/fs2-data"), "scm:git:git@github.com:satabin/fs2-data.git")),
+  resolvers += "s01" at "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 )
 
 val publishSettings = List(
@@ -91,6 +92,7 @@ val publishSettings = List(
               email = "lucas.satabin@gnieh.org",
               url = url("https://github.com/satabin"))
   ),
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
   pomExtra := (
     <ciManagement>
       <system>travis</system>
@@ -153,7 +155,7 @@ val root = (project in file("."))
     cborJson.js
   )
 
-lazy val text = crossProject(JVMPlatform, JSPlatform)
+lazy val text = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("text"))
   .settings(commonSettings)
@@ -163,7 +165,7 @@ lazy val text = crossProject(JVMPlatform, JSPlatform)
     description := "Utilities for textual data format"
   )
 
-lazy val csv = crossProject(JVMPlatform, JSPlatform)
+lazy val csv = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("csv"))
   .settings(commonSettings)
@@ -178,7 +180,7 @@ lazy val csv = crossProject(JVMPlatform, JSPlatform)
   )
   .dependsOn(text)
 
-lazy val csvGeneric = crossProject(JVMPlatform, JSPlatform)
+lazy val csvGeneric = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("csv/generic"))
   .settings(commonSettings)
